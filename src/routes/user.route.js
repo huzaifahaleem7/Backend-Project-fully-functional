@@ -7,7 +7,9 @@ import {
   updateProfileDetails,
   changeAvatar,
   updateCoverImage,
-  getUser
+  getUser,
+  getUserChannel,
+  getUserWatchHistory,
 } from "../controllers/user.controller.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -31,18 +33,22 @@ router.route("/logout").post(vrifyJWT, logout);
 // refresh access token
 router.route("/refresh").post(refreshAccessToken);
 //update password
-router.route("/changeCurrentPassword").post(vrifyJWT, UpdatePassword);
+router.route("/changeCurrentPassword").patch(vrifyJWT, UpdatePassword);
 //update profile details
-router.route("/updateProfileDetails").post(vrifyJWT, updateProfileDetails);
+router.route("/updateProfileDetails").patch(vrifyJWT, updateProfileDetails);
 //change avatar
 router
   .route("/changeAvatar")
-  .post(vrifyJWT, upload.single("avatar"), changeAvatar);
+  .patch(vrifyJWT, upload.single("avatar"), changeAvatar);
 //change coverImage
 router
   .route("/changeCoverImage")
-  .post(vrifyJWT, upload.single("coverImage"), updateCoverImage);
+  .patch(vrifyJWT, upload.single("coverImage"), updateCoverImage);
 //get user
 router.route("/getUser").get(vrifyJWT, getUser);
+//get user channel
+router.route("/getUserChannel/:username").get(vrifyJWT, getUserChannel);
+//get user watch history
+router.route("/getUserWatchHistory").get(vrifyJWT, getUserWatchHistory);
 
 export default router;
