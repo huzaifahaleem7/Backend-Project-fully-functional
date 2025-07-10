@@ -55,25 +55,132 @@ const uploadVideo = asyncHandler(async (req, res) => {
 
 //delte video
 const deleteVideo = asyncHandler(async (req, res) => {
-    //user login
-    //get Video
-    //get Thumbnail
-    //delte video
-    //delte thumbnail
-    //res
-    const delVideoFromCloudinary = await deleteCloudinaryFile(req.video?.video?.public_id, "video")
-    const delThumbnailFromCloudinary = await deleteCloudinaryFile(req.video?.thumbnail?.public_id)
+  //user login
+  //get Video
+  //get Thumbnail
+  //delte video
+  //delte thumbnail
+  //res
+  const delVideoFromCloudinary = await deleteCloudinaryFile(
+    req.video?.video?.public_id,
+    "video"
+  );
+  const delThumbnailFromCloudinary = await deleteCloudinaryFile(
+    req.video?.thumbnail?.public_id
+  );
 
-    if (!(delVideoFromCloudinary && delThumbnailFromCloudinary)){
-        throw new ApiError(500, "Thumbnail and Video not delted")
-    }
+  if (!(delVideoFromCloudinary && delThumbnailFromCloudinary)) {
+    throw new ApiError(500, "Thumbnail and Video not delted");
+  }
 
-    const delAlldescription = await Video.findByIdAndDelete(req.video._id)
-    if (!delAlldescription){
-        throw new ApiError(500, "Video not delete")
-    }
+  const delAlldescription = await Video.findByIdAndDelete(req.video._id);
+  if (!delAlldescription) {
+    throw new ApiError(500, "Video not delete");
+  }
 
-    return res.status(200).json(new ApiResponse(200, {}, "Vidoe del successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Vidoe del successfully"));
 });
 
-export { uploadVideo, deleteVideo };
+//update title description
+const updateTitleDescription = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
+  if (!(title || description)) {
+    throw new ApiError(400, "Title and description must");
+  }
+  const videoTitleDescription = await Video.findByIdAndUpdate(
+    req.video._id,
+    {
+      $set: {
+        title,
+        description,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        videoTitleDescription,
+        "Title and description update successfully"
+      )
+    );
+});
+
+//get video by id
+const getVideoById = asyncHandler(async (req, res) => {
+  const video = req.video;
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "Video Fetched Through id"));
+});
+
+//getviews on video
+const views = asyncHandler(async (req, res) => {
+  const video = await Video.findByIdAndUpdate(
+    req.video._id,
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video.views, "Views Update Sucessfully"));
+});
+
+//isToggledPublishesStatus
+const isToggledPublish = asyncHandler(async (req, res) => {
+  // const video = req.video
+  const isPublished = req.video?.isPublished;
+  let video;
+  if (isPublished === "true") {
+    video = await Video.findByIdAndUpdate(
+      req.video._id,
+      {
+        $set: {
+          isPublished: false,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  } else {
+    video = await Video.findByIdAndUpdate(
+      req.video._id,
+      {
+        $set: {
+          isPublished: true,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, video, "IstoggledpublishSuccessfully"));
+});
+
+
+export {
+  uploadVideo,
+  deleteVideo,
+  updateTitleDescription,
+  views,
+  getVideoById,
+  isToggledPublish
+};
