@@ -5,6 +5,36 @@ import uploadFileCloudinary from "../utils/cloudinary.js";
 import { Video } from "../models/video.model.js";
 import { deleteCloudinaryFile } from "../utils/deleteCloudinaryFile.js";
 
+//get all publish Videos
+const getAllPublishVideos = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, query, sortBy, sortId, userId } = req.query;
+
+  const option = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort: { [sortBy]: sortId == "desc" ? -1 : 1 },
+  };
+
+  let filter = {};
+  if (query) {
+    filter.title = { $regex: query, $options: "i" };
+  }
+
+  if (userId) {
+    filter.user = userId;
+  }
+
+  const result = await Video.paginate(filter, option);
+
+  if (!result || result.docs.length === 0){
+    throw new ApiError(404, "Video Not Found")
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Videos fetcehd Successfully"));
+});
+
 //upload Video
 const uploadVideo = asyncHandler(async (req, res) => {
   //get all details from user
@@ -175,12 +205,12 @@ const isToggledPublish = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, video, "IstoggledpublishSuccessfully"));
 });
 
-
 export {
   uploadVideo,
   deleteVideo,
   updateTitleDescription,
   views,
   getVideoById,
-  isToggledPublish
+  isToggledPublish,
+  getAllPublishVideos
 };

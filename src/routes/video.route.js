@@ -5,7 +5,8 @@ import {
   updateTitleDescription,
   views,
   getVideoById,
-  isToggledPublish
+  isToggledPublish,
+  getAllPublishVideos
 } from "../controllers/video.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -40,5 +41,8 @@ router.route("/views/:video_id").patch(getVideoId, views);
 
 //isTogglePublish
 router.route("/togglePublish/:video_id").patch(verifyJWT, getVideoId, isToggledPublish)
+
+//getAllPublishVideos
+router.route("/getAllVideos").get(getAllPublishVideos)
 
 export default router;
