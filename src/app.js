@@ -25,4 +25,8 @@ app.use("/api/v1/users", userRouter);
 import videoRouter from "./routes/video.route.js"
 app.use("/api/v1/videos", videoRouter)
 
+//import comment route
+import commentRouter from "./routes/comment.route.js"
+app.use("/api/v1/comment", commentRouter)
+
 export { app };
