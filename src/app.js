@@ -29,4 +29,7 @@ app.use("/api/v1/videos", videoRouter)
 import commentRouter from "./routes/comment.route.js"
 app.use("/api/v1/comment", commentRouter)
 
+//import like route
+import likeRouter from "./routes/like.route.js"
+app.use("/api/v1/likes", likeRouter)
 export { app };
