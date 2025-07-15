@@ -41,4 +41,8 @@ app.usr("api/v1/tweet", tweetRouter)
 import subscriptionRouter from "./routes/suscription.route.js"
 app.use("/api/v1/subscription", subscriptionRouter)
 
+//import playlist route
+import playlistRouter from "./routes/playlist.route.js"
+app.use("/api/v1/playlist", playlistRouter)
+
 export { app };
