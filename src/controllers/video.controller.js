@@ -26,8 +26,8 @@ const getAllPublishVideos = asyncHandler(async (req, res) => {
 
   const result = await Video.paginate(filter, option);
 
-  if (!result || result.docs.length === 0){
-    throw new ApiError(404, "Video Not Found")
+  if (!result || result.docs.length === 0) {
+    throw new ApiError(404, "Video Not Found");
   }
 
   return res
@@ -212,5 +212,5 @@ export {
   views,
   getVideoById,
   isToggledPublish,
-  getAllPublishVideos
+  getAllPublishVideos,
 };
